@@ -16,80 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    function generateConsulting(performance, career) {
-        // 1. [과목별 언어 필터링]
-        const subjectFilters = {
-            '인문사회': {
-                detect: ['문학', '사회', '역사', '윤리', '지리', '언어', '비평'],
-                terms: ['성찰', '비판적 시각', '가치', '맥락', '수용', '변화'],
-                goal: '인간 중심의 가치 성찰과 맥락적 이해'
-            },
-            '자연공학': {
-                detect: ['과학', '물리', '화학', '생명', '지구', '수학', '기술'],
-                terms: ['메커니즘', '효율', '모델링', '인과관계', '최적화'],
-                goal: '현상의 인과적 해명과 시스템적 효율화'
-            }
-        };
-
-        // 2. [진로 키워드의 '동사'화]
-        const careerVerbification = {
-            '기계': '동역학적 에너지를 효율적으로 제어하고 구조적 안정성을 설계하는 시각',
-            '화학': '물질의 효율적 결합과 반응을 설계하여 가치를 창출하는 시각',
-            '컴퓨터': '복잡한 현상을 논리적 단계로 구조화하고 연산의 효율성을 극대화하는 사고',
-            '인공지능': '데이터 속의 패턴을 정교하게 모델링하여 지능형 최적화를 구현하는 사고',
-            '생명': '생체 시스템의 정교한 메커니즘을 분석하여 생명 현상을 제어하는 시각',
-            '전자': '전자기적 신호의 흐름을 설계하여 정보 전달과 제어의 효율을 높이는 시각',
-            '의학': '병태생리학적 인과관계를 추적하여 생명 유지의 최적화된 솔루션을 찾는 시각',
-            '심리': '인지적 기제와 행동의 상관관계를 모델링하여 인간 마음의 메커니즘을 읽는 시각',
-            '경제': '희소한 자원의 효율적 배분을 위한 시장 모델링과 최적의 의사결정 시각',
-            '경영': '조직의 시스템적 효율을 극대화하고 리스크를 정량적으로 관리하는 시각'
-        };
-
-        // Detect Subject Category
-        let category = '인문사회';
-        for (const cat in subjectFilters) {
-            if (subjectFilters[cat].detect.some(d => performance.includes(d))) {
-                category = cat;
-                break;
-            }
-        }
-
-        const filter = subjectFilters[category];
-        const mainTerm = filter.terms[0];
-        const subTerm = filter.terms[1];
-
-        // Verbify Career
-        let verbifiedCareer = '학문적 원리를 실무적 해결책으로 치환하는 시각';
-        for (const key in careerVerbification) {
-            if (career.includes(key)) {
-                verbifiedCareer = careerVerbification[key];
-                break;
-            }
-        }
-
-        const perfKey = performance.split(' ').filter(w => w.length > 1)[0] || '해당 소재';
-
-        // 3. [문제 정의의 '브릿지' 공식] 적용
-        const bridgeLogic = `${perfKey}에 내재된 [${mainTerm}과 ${subTerm}]이라는 문제를 해결하기 위해, ${career}의 [${verbifiedCareer}]을 관점으로 빌려와서 [학제간 융합적 성찰이 담긴 새로운 대안]을 제시합니다.`;
-
-        return {
-            title: `"${mainTerm}적 성찰로 본 ${perfKey}: ${career}의 ${subTerm} 모델을 통한 재해석"`,
-            logic: bridgeLogic,
-            guide: {
-                question: `"${perfKey}이 지닌 '${mainTerm}'의 결핍을 ${career}의 '${subTerm}' 관점에서 보완할 수 있는 논리적 모델은 무엇인가?"`,
-                execution: `단순한 지식 결합을 넘어, ${perfKey}의 고유한 맥락 속에서 [${verbifiedCareer}]을 적용하여 정량적/논리적 해결 모델을 제안하는 보고서 작성`,
-                killingPoint: `교과 특유의 '${mainTerm}' 역량을 먼저 입증한 후, 이를 ${career}의 '${subTerm}'이라는 관점으로 해결해 나가는 '문제 해결형 지적 확장' 강조`
-            },
-            sample: `${perfKey}에 나타난 ${mainTerm}을 분석하며 학제간 융합의 필요성을 인식함. 특히 해당 문제의 해법을 찾기 위해 ${career} 분야의 '${verbifiedCareer}'을 도입하여 사고를 확장한 점이 인상적임. 교과 고유의 '${subTerm}' 역량과 전공적 통찰을 유기적으로 연결하여, 현상을 다각도에서 모델링하고 최적의 대안을 도출하는 탁월한 융합적 역량을 증명함.`
-        };
-    }
-
     generateBtn.addEventListener('click', async () => {
+        const subject = document.getElementById('subject-name').value.trim();
         const performance = performanceInput.value.trim();
         const career = careerInput.value.trim();
 
-        if (!performance || !career) {
-            alert('수행평가 내용과 희망 진로를 모두 입력해주세요!');
+        if (!subject || !performance || !career) {
+            alert('모든 필드를 입력해주세요!');
             return;
         }
 
@@ -100,17 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const analysis = generateConsulting(performance, career);
+        const analysis = generateConsulting(subject, performance, career);
         
         document.getElementById('result-title').textContent = analysis.title;
-        document.getElementById('result-logic').textContent = analysis.logic;
+        document.getElementById('result-logic').textContent = analysis.reason;
         
         const guideHtml = `
-            <ul>
-                <li><strong>융합적 핵심 질문:</strong> ${analysis.guide.question}</li>
-                <li><strong>실행 아이디어:</strong> ${analysis.guide.execution}</li>
-                <li><strong>킬링 포인트:</strong> ${analysis.guide.killingPoint}</li>
-            </ul>
+            <div class="fusion-step">
+                <p style="margin-bottom: 1rem;">${analysis.perspective}</p>
+                <div class="quote-box" style="background: rgba(99, 102, 241, 0.1); border-left-color: var(--accent);">
+                    <strong>💡 구체적 탐구 제안:</strong> ${analysis.action}
+                </div>
+            </div>
         `;
         document.getElementById('result-guide').innerHTML = guideHtml;
         document.getElementById('result-sample').textContent = analysis.sample;
@@ -118,4 +52,45 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.classList.add('hidden');
         reportCard.classList.remove('hidden');
     });
+
+    function generateConsulting(subject, performance, career) {
+        // Career Principles (Metaphorical Analysis Tools)
+        const careerPrinciples = {
+            '기계': { principle: '동역학적 균형과 구조적 효율 최적화', action: '성능 변수 간의 상관관계를 수치화하여 최적의 메커니즘을 도출하는 실험 설계' },
+            '화학': { principle: '물질 간의 반응 평형과 에너지 효율적 전이', action: '반응 속도 조절 인자를 분석하여 최적의 반응 환경을 시뮬레이션하는 모델 구축' },
+            '컴퓨터': { principle: '추상화를 통한 시스템 복잡도의 계층적 구조화', action: '문제 해결을 위한 조건부 알고리즘을 설계하고 데이터 흐름의 효율성을 검증' },
+            '데이터': { principle: '정량적 지표를 활용한 현상의 패턴 가시화', action: '회귀 분석 혹은 확률 모델을 적용하여 변수 간의 숨겨진 상관관계를 도출' },
+            '생명': { principle: '유기적 상호작용과 시스템적 항상성 유지', action: '외부 자극에 따른 생체 피드백 경로를 도식화하고 반응 메커니즘을 분석' },
+            '디자인': { principle: '사용자 경험 중심의 시각적 정보 인터페이스 최적화', action: '심미성과 가독성을 결합한 인포그래픽을 제작하여 정보 전달의 효율성을 실험' },
+            '심리': { principle: '인지적 편향과 인간 행동의 상관 기제 분석', action: '심리적 변수가 반영된 통계 데이터를 산출하여 행동 모델의 타당성을 검증' }
+        };
+
+        // Subject Contexts (Core Competencies)
+        const subjectContexts = {
+            '국어': '서사적 개연성 분석과 상징적 의미의 비판적 해석',
+            '문학': '서사적 개연성 분석과 상징적 의미의 비판적 해석',
+            '수학': '논리적 엄밀성과 추상적 수식을 활용한 문제 해결',
+            '사회': '현상의 구조적 모순 파악과 유기적 상호작용의 이해',
+            '과학': '실증적 탐구와 보편적 법칙의 논리적 적용',
+            '물리': '역학적 에너지 보존과 힘의 평형 메커니즘 분석',
+            '화학': '미시적 결합 원리와 물질의 에너지 변화 해석'
+        };
+
+        // Selection Logic
+        let principleObj = { principle: '현상의 논리적 구조화와 시스템적 최적화', action: '핵심 변수를 추출하여 논리적인 인과관계를 증명하는 탐구 보고서 작성' };
+        for (const key in careerPrinciples) {
+            if (career.includes(key)) { principleObj = careerPrinciples[key]; break; }
+        }
+
+        const subjContext = subjectContexts[subject] || '교과 고유의 논리적 분석력과 지적 탐구심';
+        const perfSnippet = performance.split(' ').filter(w => w.length > 1).slice(0, 3).join(' ') || '해당 활동';
+
+        return {
+            title: `[${subject}] ${perfSnippet}에 투영된 ${principleObj.principle.split(' ')[0]}적 고찰`,
+            reason: `${performance} 과정에서 나타나는 구체적인 현상에 주목했습니다. 특히 ${perfSnippet}이 단순히 결과로 존재하는 것이 아니라, 그 기저에 어떤 논리적 흐름이 있는지 궁금해져 이를 학술적으로 정의해보고자 했습니다.`,
+            perspective: `${subject} 시간의 ${subjContext} 역량을 기반으로, 이를 ${principleObj.principle} 관점에서 해부했습니다. ${performance}의 핵심 소재들을 유기적인 시스템의 구성 요소로 보고, 각 요소가 서로 어떻게 영향을 주고받는지 분석하는 틀을 마련했습니다.`,
+            action: `${performance}의 구체적 사례를 바탕으로 ${principleObj.action}`,
+            sample: `${performance}에 대한 탁월한 ${subjContext} 역량을 보여줌. 특히 현상을 표면적으로 수용하지 않고, ${principleObj.principle}을 바탕으로 문제를 입체적으로 구조화하는 깊이 있는 탐구 태도가 돋보임. 이를 통해 ${performance}의 복잡한 인과관계를 논리적으로 분석해내는 높은 학술적 역량을 증명함.`
+        };
+    }
 });

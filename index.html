@@ -27,17 +27,24 @@
         <section class="input-section">
             <div class="card glass">
                 <div class="input-group">
-                    <label for="performance-content">
-                        <span class="icon">📚</span> 교과 수행평가 내용
+                    <label for="subject-name">
+                        <span class="icon">📖</span> 교과목명
                     </label>
-                    <textarea id="performance-content" placeholder="예: 문학 - 1930년대 소설을 읽고 현대 사회 문제와 연관 지어 비평문 쓰기"></textarea>
+                    <input type="text" id="subject-name" placeholder="예: 국어, 수학1, 물리학1">
+                </div>
+
+                <div class="input-group">
+                    <label for="performance-content">
+                        <span class="icon">📝</span> 수행평가/활동 내용
+                    </label>
+                    <textarea id="performance-content" placeholder="예: '난장이가 쏘아올린 작은 공' 속 도시 빈민의 삶 분석"></textarea>
                 </div>
 
                 <div class="input-group">
                     <label for="career-interest">
-                        <span class="icon">🎯</span> 희망 진로 / 관심 분야
+                        <span class="icon">🚀</span> 희망 진로 / 관심 분야
                     </label>
-                    <input type="text" id="career-interest" placeholder="예: 기계공학과, 인공지능 연구원">
+                    <input type="text" id="career-interest" placeholder="예: 데이터 구조화, 시스템 최적화 (학과명 자제)"></input>
                 </div>
 
                 <button id="generate-btn" class="primary-btn">
@@ -61,22 +68,22 @@
                 
                 <div class="report-content">
                     <div class="report-item">
-                        <h3>[교과 본질 기반 융합 주제]</h3>
+                        <h3>[탐구의 제목]</h3>
                         <p id="result-title" class="title-text"></p>
                     </div>
 
                     <div class="report-item">
-                        <h3>[교과 기반 탐구 경로]</h3>
+                        <h3>[탐구를 시작한 이유]</h3>
                         <p id="result-logic"></p>
                     </div>
 
                     <div class="report-item">
-                        <h3>[심화 탐구 가이드]</h3>
+                        <h3>[나만의 융합 관점]</h3>
                         <div id="result-guide"></div>
                     </div>
 
                     <div class="report-item">
-                        <h3>[생기부 기재 예시]</h3>
+                        <h3>[선생님이 써줄 생기부 한 줄]</h3>
                         <div class="quote-box">
                             <p id="result-sample"></p>
                         </div>
