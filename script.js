@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const career = careerInput.value.trim();
 
         if (!subject || !performance || !career) {
-            alert('모든 필드를 입력해주세요!');
+            alert('모든 정보를 입력해주세요!');
             return;
         }
 
@@ -33,64 +33,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const analysis = generateConsulting(subject, performance, career);
+        const idea = generateIdea(subject, performance, career);
         
-        document.getElementById('result-title').textContent = analysis.title;
-        document.getElementById('result-logic').textContent = analysis.reason;
-        
-        const guideHtml = `
-            <div class="fusion-step">
-                <p style="margin-bottom: 1rem;">${analysis.perspective}</p>
-                <div class="quote-box" style="background: rgba(99, 102, 241, 0.1); border-left-color: var(--accent);">
-                    <strong>💡 구체적 탐구 제안:</strong> ${analysis.action}
-                </div>
+        // Summary Area
+        document.getElementById('result-summary').innerHTML = `
+            <ul class="summary-list">
+                <li><strong>선택한 교과 주제:</strong> ${idea.summary.subjectTopic}</li>
+                <li><strong>추천 소재(작품/개념):</strong> ${idea.summary.material}</li>
+                <li><strong>연결할 진로 개념:</strong> ${idea.summary.careerConcept}</li>
+                <li><strong>과제물 최종 제목:</strong> <span class="highlight-text">${idea.summary.title}</span></li>
+            </ul>
+        `;
+
+        // Logic Area
+        document.getElementById('result-logic-section').innerHTML = `
+            <div class="logic-box">
+                <p><strong>📍 문제 정의:</strong> ${idea.logic.problem}</p>
+                <p><strong>📍 나만의 융합 관점:</strong> ${idea.logic.perspective}</p>
             </div>
         `;
-        document.getElementById('result-guide').innerHTML = guideHtml;
-        document.getElementById('result-sample').textContent = analysis.sample;
+
+        // Action Plan Area
+        document.getElementById('result-action-plan').innerHTML = `
+            <div class="action-plan-steps">
+                <div class="step"><strong>• 도입부 (1~2p):</strong> ${idea.plan.intro}</div>
+                <div class="step"><strong>• 전개부 (3~4p):</strong> ${idea.plan.body}</div>
+                <div class="step"><strong>• 결론 및 대안 (5p):</strong> ${idea.plan.outro}</div>
+            </div>
+        `;
 
         loader.classList.add('hidden');
         reportCard.classList.remove('hidden');
     });
 
-    function generateConsulting(subject, performance, career) {
-        // Career Principles (Metaphorical Analysis Tools)
-        const careerPrinciples = {
-            '기계': { principle: '동역학적 균형과 구조적 효율 최적화', action: '성능 변수 간의 상관관계를 수치화하여 최적의 메커니즘을 도출하는 실험 설계' },
-            '화학': { principle: '물질 간의 반응 평형과 에너지 효율적 전이', action: '반응 속도 조절 인자를 분석하여 최적의 반응 환경을 시뮬레이션하는 모델 구축' },
-            '컴퓨터': { principle: '추상화를 통한 시스템 복잡도의 계층적 구조화', action: '문제 해결을 위한 조건부 알고리즘을 설계하고 데이터 흐름의 효율성을 검증' },
-            '데이터': { principle: '정량적 지표를 활용한 현상의 패턴 가시화', action: '회귀 분석 혹은 확률 모델을 적용하여 변수 간의 숨겨진 상관관계를 도출' },
-            '생명': { principle: '유기적 상호작용과 시스템적 항상성 유지', action: '외부 자극에 따른 생체 피드백 경로를 도식화하고 반응 메커니즘을 분석' },
-            '디자인': { principle: '사용자 경험 중심의 시각적 정보 인터페이스 최적화', action: '심미성과 가독성을 결합한 인포그래픽을 제작하여 정보 전달의 효율성을 실험' },
-            '심리': { principle: '인지적 편향과 인간 행동의 상관 기제 분석', action: '심리적 변수가 반영된 통계 데이터를 산출하여 행동 모델의 타당성을 검증' }
+    function generateIdea(subject, performance, career) {
+        // Real-world "Almang-ee" Database
+        const books = [
+            { title: "『변신』 (프란츠 카프카)", topic: "소외, 의사소통 단절, 존재의 가치" },
+            { title: "『멋진 신세계』 (올더스 헉슬리)", topic: "계급 사회, 기술 만능주의, 인간성 상실" },
+            { title: "『침묵의 봄』 (레이첼 카슨)", topic: "환경 오염, 생태계 파괴, 기업의 윤리" },
+            { title: "『정의란 무엇인가』 (마이클 샌델)", topic: "공정, 다수의 이익, 개인의 권리" }
+        ];
+
+        const concepts = {
+            '기계': { name: "피드백 제어 시스템 (Feedback Control System)", desc: "시스템의 출력을 입력에 반영하여 오차를 줄이는 메커니즘" },
+            '화학': { name: "르샤틀리에의 원리 (Le Chatelier's Principle)", desc: "외부 변화를 상쇄하는 방향으로 평형이 이동하는 성질" },
+            '컴퓨터': { name: "데이터 정규화 (Data Normalization)", desc: "중복을 제거하고 데이터를 구조화하여 효율성을 높이는 과정" },
+            '경제': { name: "게임 이론 (Game Theory)", desc: "상대방의 선택을 고려하여 자신의 최적 전략을 결정하는 분석법" },
+            '생명': { name: "항상성 유지 기전 (Homeostasis)", desc: "외부 환경 변화에도 내부 상태를 일정하게 유지하려는 생명 현상" },
+            '디자인': { name: "게슈탈트 시지각 원리 (Gestalt Principles)", desc: "부분이 아닌 전체로서 사물을 인식하는 인간의 시각적 특성" }
         };
 
-        // Subject Contexts (Core Competencies)
-        const subjectContexts = {
-            '국어': '서사적 개연성 분석과 상징적 의미의 비판적 해석',
-            '문학': '서사적 개연성 분석과 상징적 의미의 비판적 해석',
-            '수학': '논리적 엄밀성과 추상적 수식을 활용한 문제 해결',
-            '사회': '현상의 구조적 모순 파악과 유기적 상호작용의 이해',
-            '과학': '실증적 탐구와 보편적 법칙의 논리적 적용',
-            '물리': '역학적 에너지 보존과 힘의 평형 메커니즘 분석',
-            '화학': '미시적 결합 원리와 물질의 에너지 변화 해석'
-        };
-
-        // Selection Logic
-        let principleObj = { principle: '현상의 논리적 구조화와 시스템적 최적화', action: '핵심 변수를 추출하여 논리적인 인과관계를 증명하는 탐구 보고서 작성' };
-        for (const key in careerPrinciples) {
-            if (career.includes(key)) { principleObj = careerPrinciples[key]; break; }
+        // Pick one book and concept
+        const book = books[Math.floor(Math.random() * books.length)];
+        let concept = { name: "임계점 이론 (Critical Point Theory)", desc: "어떤 현상이 갑자기 변화하기 시작하는 특정 지점" };
+        
+        for (const key in concepts) {
+            if (career.includes(key)) { concept = concepts[key]; break; }
         }
 
-        const subjContext = subjectContexts[subject] || '교과 고유의 논리적 분석력과 지적 탐구심';
-        const perfSnippet = performance.split(' ').filter(w => w.length > 1).slice(0, 3).join(' ') || '해당 활동';
-
         return {
-            title: `[${subject}] ${perfSnippet}에 투영된 ${principleObj.principle.split(' ')[0]}적 고찰`,
-            reason: `${performance} 과정에서 나타나는 구체적인 현상에 주목했습니다. 특히 ${perfSnippet}이 단순히 결과로 존재하는 것이 아니라, 그 기저에 어떤 논리적 흐름이 있는지 궁금해져 이를 학술적으로 정의해보고자 했습니다.`,
-            perspective: `${subject} 시간의 ${subjContext} 역량을 기반으로, 이를 ${principleObj.principle} 관점에서 해부했습니다. ${performance}의 핵심 소재들을 유기적인 시스템의 구성 요소로 보고, 각 요소가 서로 어떻게 영향을 주고받는지 분석하는 틀을 마련했습니다.`,
-            action: `${performance}의 구체적 사례를 바탕으로 ${principleObj.action}`,
-            sample: `${performance}에 대한 탁월한 ${subjContext} 역량을 보여줌. 특히 현상을 표면적으로 수용하지 않고, ${principleObj.principle}을 바탕으로 문제를 입체적으로 구조화하는 깊이 있는 탐구 태도가 돋보임. 이를 통해 ${performance}의 복잡한 인과관계를 논리적으로 분석해내는 높은 학술적 역량을 증명함.`
+            summary: {
+                subjectTopic: book.topic,
+                material: book.title,
+                careerConcept: concept.name,
+                title: `[${subject}] ${book.title.split(' ')[0]}을 통해 본 ${concept.name.split(' ')[0]}적 시스템 설계`
+            },
+            logic: {
+                problem: `${book.title}에서 나타나는 '${book.topic.split(',')[0]}'의 문제는 개별 주체 간의 신호 전달이 왜곡되어 전체 시스템의 조화가 깨졌기 때문에 발생합니다.`,
+                perspective: `${concept.name}의 관점에서 보면, 소설 속 인물들의 갈등은 단순한 심리전이 아니라 ${concept.desc}의 원리가 제대로 작동하지 않아 발생한 시스템 오류로 해석할 수 있습니다.`
+            },
+            plan: {
+                intro: `${book.title}의 줄거리 요약과 함께, 탐구하고자 하는 핵심 질문(예: 왜 가족들은 변신한 주인공을 거부했는가?)을 제시합니다.`,
+                body: `${concept.name}의 정의를 설명하고, 소설 속 사건들을 이 이론에 대입하여 분석합니다. (예: 가족의 태도 변화를 ${concept.name.split(' ')[0]} 그래프로 시각화)`,
+                outro: `분석 결과를 종합하여, 현대 사회에서 '${book.topic.split(',')[0]}' 문제를 해결하기 위해 필요한 ${career}적 마인드셋이나 기술적 보완점을 제안하며 마무리합니다.`
+            }
         };
     }
+});
 });
