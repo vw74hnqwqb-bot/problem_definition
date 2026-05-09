@@ -35,32 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const idea = generateIdea(subject, performance, career);
         
-        // Summary Area
-        document.getElementById('result-summary').innerHTML = `
-            <ul class="summary-list">
-                <li><strong>📍 현재 과제 상황:</strong> ${idea.summary.status}</li>
-                <li><strong>📌 추천 소재 및 개념:</strong> ${idea.summary.material}</li>
-                <li><strong>✅ 최종 결과물 형태:</strong> ${idea.summary.format}</li>
-                <li><strong>🚀 과제물 최종 제목:</strong> <span class="highlight-text">${idea.summary.title}</span></li>
-            </ul>
+        // Handle Step 1 (Show only if requested)
+        const step1Container = document.getElementById('step-1-container');
+        if (idea.step1) {
+            step1Container.classList.remove('hidden');
+            document.getElementById('result-step-1').innerHTML = idea.step1;
+        } else {
+            step1Container.classList.add('hidden');
+        }
+
+        // Step 2
+        document.getElementById('result-step-2').innerHTML = `
+            <p><strong>📍 선택한 소재:</strong> ${idea.step2.material}</p>
+            <p><strong>📍 발견한 본질적 문제:</strong> ${idea.step2.problem}</p>
         `;
 
-        // Logic Area
-        document.getElementById('result-logic-section').innerHTML = `
-            <div class="logic-box">
-                <p><strong>💡 문제 정의:</strong> ${idea.logic.problem}</p>
-                <p><strong>💡 전공 기반 분석 관점:</strong> ${idea.logic.perspective}</p>
-            </div>
+        // Step 3
+        document.getElementById('result-step-3').innerHTML = `
+            <p>${idea.step3.content}</p>
         `;
 
-        // Action Plan Area
-        const planHtml = idea.plan.steps.map(step => `
+        // Step 4
+        const planHtml = idea.step4.steps.map(s => `
             <div class="step">
-                <strong>${step.header}:</strong> ${step.content}
+                <strong>${s.header}:</strong> ${s.content}
             </div>
         `).join('');
-
-        document.getElementById('result-action-plan').innerHTML = `
+        document.getElementById('result-step-4').innerHTML = `
             <div class="action-plan-steps">
                 ${planHtml}
             </div>
@@ -71,70 +72,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateIdea(subject, performance, career) {
-        // 1. [현재 단계 및 포맷 파악]
-        let format = '보고서';
-        let unit = '단락';
-        if (performance.includes('카드뉴스')) { format = '카드뉴스'; unit = '슬라이드'; }
-        else if (performance.includes('발표') || performance.includes('PPT')) { format = '발표/PPT'; unit = '장'; }
-
-        // Detect quantity (e.g., "4개 조사")
-        const quantityMatch = performance.match(/(\d+)개/);
-        const count = quantityMatch ? parseInt(quantityMatch[1]) : 1;
-
-        // 2. [소재 매칭 - 자연스러운 융합]
-        const db = [
-            { title: "『변신』 (프란츠 카프카)", topic: "소통 단절과 개체의 고립", logic: "피드백 루프의 단절로 인한 시스템 붕괴" },
-            { title: "『멋진 신세계』 (올더스 헉슬리)", topic: "획일화된 사회와 개성 상실", logic: "과도한 정규화(Normalization)로 인한 데이터 다양성 결여" },
-            { title: "『침묵의 봄』 (레이첼 카슨)", topic: "생태계 평형 파괴", logic: "연쇄적 인과관계에 따른 평형점 이동" },
-            { title: "『자유론』 (존 스튜어트 밀)", topic: "개인의 자유와 사회적 간섭", logic: "다중 이해관계자 간의 최적화 알고리즘 탐색" }
-        ];
-
-        const selectedWorks = [];
-        for(let i=0; i<count; i++) {
-            selectedWorks.push(db[i % db.length]);
-        }
-
-        const materials = selectedWorks.map(w => w.title).join(', ');
-        const mainWork = selectedWorks[0];
-
-        // Career Logic (Metaphorical)
-        const careerLogics = {
-            '기계': '변수 간의 동적 평형과 오차 수정 메커니즘',
-            '화학': '에너지 평형 상태에서의 물질적 상호작용',
-            '컴퓨터': '복잡한 구조의 계층적 추상화와 논리적 단계화',
-            '데이터': '다량의 변수에서 유의미한 패턴을 추출하는 방식',
-            '생명': '항상성 유지를 위한 자기 조절 피드백 시스템'
+        // Database categorized by Subject Type
+        const db = {
+            '문학': [
+                { title: "『변신』 (프란츠 카프카)", summary: "어느 날 갑자기 벌레로 변한 주인공을 통해 인간 소외와 가족 공동체의 붕괴를 다룬 고전 소설" },
+                { title: "『멋진 신세계』 (올더스 헉슬리)", summary: "고도로 통제된 미래 사회에서 기계화된 인간들의 삶을 통해 자유 의지의 가치를 묻는 SF 소설" },
+                { title: "『난장이가 쏘아올린 작은 공』 (조세희)", summary: "산업화 과정에서 소외된 도시 빈민 가족의 아픔과 사회적 갈등을 묘사한 소설" }
+            ],
+            '과학': [
+                { title: "엔트로피 법칙 (무질서도 증가 원리)", summary: "우주의 모든 현상은 무질서한 상태로 나아가며, 이를 되돌리기 위해서는 에너지가 필요하다는 물리 법칙" },
+                { title: "생태계 먹이 사슬과 평형", summary: "종 간의 포식과 피포식 관계를 통해 생태계가 스스로 균형을 유지하는 유기적 시스템" }
+            ]
         };
 
-        let activeLogic = '현상의 인과관계를 논리적으로 구조화하는 시각';
-        for (const key in careerLogics) {
-            if (career.includes(key)) { activeLogic = careerLogics[key]; break; }
+        // Determine Subject Type
+        const isScience = performance.includes('과학') || performance.includes('실험') || subject.includes('과학') || subject.includes('물리');
+        const activeDb = isScience ? db['과학'] : db['문학'];
+
+        // 1. [제출 조건 파악] - Quantity
+        const quantityMatch = performance.match(/(\d+)개/);
+        const count = quantityMatch ? parseInt(quantityMatch[1]) : 1;
+        const needsSearch = performance.includes('조사') || performance.includes('추천');
+
+        // 2. [Step 1 생성]
+        let step1 = null;
+        if (needsSearch) {
+            step1 = '<ul class="summary-list">';
+            for(let i=0; i<Math.max(count, 2); i++) {
+                const item = activeDb[i % activeDb.length];
+                step1 += `<li><strong>${item.title}</strong>: ${item.summary}</li>`;
+            }
+            step1 += '</ul>';
         }
 
-        // 3. [출력 생성]
-        const steps = [];
+        const selected = activeDb[0];
+
+        // 3. [Step 3 비유적 연성화]
+        const metaphors = {
+            '기계': '서로 맞물려 돌아가는 톱니바퀴처럼 조화로운 상태가 깨졌을 때, 이를 다시 제자리로 돌려놓는 과정',
+            '화학': '서로 다른 성질의 액체가 섞여 안정을 찾듯, 갈등 상황에서 새로운 평형점을 찾아가는 반응',
+            '컴퓨터': '복잡하게 얽힌 실타래를 하나씩 풀어가며 가장 효율적인 길을 찾아내는 논리적 순서',
+            '데이터': '수많은 점들 속에서 하나의 선을 발견하듯, 혼란스러운 현상 속에서 명확한 규칙을 찾아내는 방식',
+            '생명': '몸의 온도를 일정하게 유지하려는 성질처럼, 외부 충격에도 스스로를 지켜내려는 건강한 복원력'
+        };
+
+        let softMetaphor = '엉킨 실타래를 논리적으로 풀어내어 최적의 답을 찾아가는 시각';
+        for (const key in metaphors) {
+            if (career.includes(key)) { softMetaphor = metaphors[key]; break; }
+        }
+
+        // 4. [Step 4 포맷 최적화]
+        let format = performance.includes('카드뉴스') ? '카드뉴스' : (performance.includes('발표') ? '발표' : '보고서');
+        const planSteps = [];
         if (format === '카드뉴스') {
-            steps.push({ header: 'Slide 1-2 (도입)', content: `${mainWork.title}의 핵심 장면을 통해 탐구 동기를 시각화합니다.` });
-            steps.push({ header: 'Slide 3-5 (분석)', content: `${activeLogic}의 관점에서 사건의 인과관계를 분석한 카드 구성을 제안합니다.` });
-            steps.push({ header: 'Slide 6 (결론)', content: `현대적 대안을 제시하며 마무리합니다.` });
+            planSteps.push({ header: 'Slide 1-2', content: `${selected.title} 속의 핵심 갈등을 한 눈에 보여주는 인트로` });
+            planSteps.push({ header: 'Slide 3-5', content: `${softMetaphor}을 통해 분석한 문제의 원인과 해결 과정` });
+            planSteps.push({ header: 'Slide 6', content: `우리가 실천할 수 있는 한 줄 제안` });
         } else {
-            steps.push({ header: '1단계 (서론/도입)', content: `${materials}을 선정한 이유와 당장 해결해야 할 과제 목표를 정의합니다.` });
-            steps.push({ header: '2단계 (본론/전개)', content: `${activeLogic}을 활용하여 각 소재의 핵심 모순을 분석하고 논리적 연결 고리를 만듭니다.` });
-            steps.push({ header: '3단계 (결론/마무리)', content: `탐구 결과를 종합하여 실천적 대안을 제시합니다.` });
+            planSteps.push({ header: '서론', content: `${selected.title}을 통해 탐구하고 싶은 질문 던지기` });
+            planSteps.push({ header: '본론', content: `${softMetaphor}을 분석 틀로 삼아 소재의 깊이 있는 이면 파헤치기` });
+            planSteps.push({ header: '결론', content: `탐구를 통해 얻은 교훈과 앞으로의 다짐` });
         }
 
         return {
-            summary: {
-                status: `${count}개의 소재를 활용한 ${format} 제작 단계`,
-                material: materials,
-                format: format,
-                title: `${mainWork.title.split(' ')[0]} 속의 ${mainWork.topic.split(' ')[0]} 현상: ${activeLogic.split(' ')[0]}적 접근`
-            },
-            logic: {
-                problem: `${mainWork.title}에서 발생하는 갈등은 구성원 간의 정보 전달이 왜곡되어 전체 시스템의 안정성이 깨진 상태를 의미합니다.`,
-                perspective: `이러한 현상을 '${activeLogic}' 관점에서 분석하면, 단순한 감정적 갈등이 아니라 시스템의 입력과 출력 사이에서 발생하는 논리적 오류로 재정의할 수 있습니다.`
-            },
-            plan: { steps }
+            step1,
+            step2: { material: selected.title, problem: `${selected.title}에 나타난 갈등은 단순한 다툼이 아니라, 구성원 간의 조화가 무너져 시스템 전체가 위태로워진 상태입니다.` },
+            step3: { content: `이 상황을 '${softMetaphor}'이라는 관점으로 바라보았습니다. 주인공이 겪는 어려움은 개인이 해결할 수 없는 외부의 압박에 의해 스스로를 지키는 힘이 약해진 결과이며, 이를 회복하기 위해 시스템적 보완이 필요함을 발견했습니다.` },
+            step4: { steps: planSteps }
         };
     }
 });
