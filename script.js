@@ -17,48 +17,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateConsulting(performance, career) {
-        // Concept Mapping for Professionalism (Avoids direct major names)
-        const conceptMap = {
-            '기계': ['동역학적 메커니즘', '구조적 안정성', '최적 설계 원리'],
-            '화학': ['반응 속도론', '분자 간 상호작용', '에너지 효율 최적화'],
-            '생명': ['생화학적 대사 경로', '유전자 발현 조절', '효소 반응 메커니즘'],
-            '전기': ['회로 소자 특성', '신호 처리 알고리즘', '전자기적 간섭 제어'],
-            '전자': ['반도체 물리', '임베디드 시스템 설계', '제어 시스템'],
-            '컴퓨터': ['알고리즘 복잡도', '데이터 구조 효율화', '추상화 모델링'],
-            '인공지능': ['신경망 최적화', '확률적 모델링', '패턴 인식 알고리즘'],
-            '소프트웨어': ['객체 지향 설계', '시스템 아키텍처', '코드 리팩토링'],
-            '의학': ['병태생리학적 기전', '임상 데이터 분석', '생체 신호 해석'],
-            '경제': ['미시적 의사결정 모델', '시장 동태적 분석', '게임 이론'],
-            '경영': ['조직 행동론', '공급망 최적화', '데이터 기반 리스크 관리'],
-            '심리': ['인지 편향 메커니즘', '신경 심리학적 근거', '행동 모델링']
+        // Subject-Specific Terminology (The "Subject Essence")
+        const subjectEssence = {
+            '문학': { terms: ['서사적 구조', '문학적 형상화', '비판적 성찰', '상징적 의미'], goal: '인간 소외 및 공동체 가치 회복' },
+            '사회': { terms: ['사회 구조적 모순', '상호작용적 관점', '제도적 보완', '공익적 가치'], goal: '지속 가능한 사회 시스템 설계' },
+            '과학': { terms: ['인과 관계의 정량화', '메커니즘 분석', '법칙의 보편성', '실증적 탐구'], goal: '자연 현상의 논리적 해명 및 기술적 응용' }
         };
 
-        // Find relevant concepts based on input
-        let concepts = ['시스템적 최적화', '현상에 대한 정량적 분석', '논리적 추론 모델'];
-        for (const key in conceptMap) {
-            if (career.includes(key)) {
-                concepts = conceptMap[key];
-                break;
-            }
+        // Career as a "Perspective" (The "Tool")
+        const careerPerspective = {
+            '기계': '동역학적 제어 및 시스템 최적화',
+            '화학': '물질 대사 및 분자적 상호작용',
+            '인공지능': '알고리즘적 판단 및 지능형 모델링',
+            '컴퓨터': '데이터 구조화 및 연산 효율성',
+            '생명': '생체 시스템의 항상성 및 기전',
+            '심리': '인지적 기제 및 행동 예측 모델'
+        };
+
+        // Detect Subject (Default to Literature/General)
+        let subject = '문학';
+        for (const key in subjectEssence) {
+            if (performance.includes(key)) { subject = key; break; }
         }
 
-        const perfKey = performance.split(' ').filter(w => w.length > 1)[0] || '해당 소재';
-        const mainConcept = concepts[0];
-        const subConcept = concepts[1];
+        const essence = subjectEssence[subject];
+        let perspective = '융합적 시각을 통한 시스템 보완';
+        for (const key in careerPerspective) {
+            if (career.includes(key)) { perspective = careerPerspective[key]; break; }
+        }
+
+        const perfKey = performance.split(' ').filter(w => w.length > 1)[0] || '탐구 대상';
+        const mainTerm = essence.terms[0];
+        const subTerm = essence.terms[1];
 
         return {
-            title: `"${mainConcept} 관점에서 재해석한 ${perfKey} - ${subConcept}을 통한 심화 고찰"`,
-            logic: `${perfKey}의 기저에 깔린 현상을 ${mainConcept} 및 ${subConcept}의 관점에서 분석했습니다. 단순한 지식의 나열이 아니라, 인문학적 배경지식이 기술적/과학적 원리로 어떻게 치환될 수 있는지 탐구하여 학문적 호기심의 확장을 보여주는 구조입니다.`,
+            title: `"${perfKey}에 나타난 ${mainTerm} 분석과 ${perspective}을 통한 문제 해결적 고찰"`,
+            logic: `먼저 ${perfKey}의 ${mainTerm}와 ${subTerm}를 통해 해당 교과가 다루는 본질적인 가치인 '${essence.goal}'를 깊이 있게 분석했습니다. 이후, 이를 실질적으로 구현하거나 해결하기 위한 도구로서 ${career}의 '${perspective}' 관점을 도입하여 학문의 경계를 넘나드는 성찰을 시도했습니다.`,
             guide: {
-                bridge: `${mainConcept}, ${subConcept}, 정량적 모델링`,
-                execution: `[${subConcept}]을 적용한 가상 시뮬레이션을 수행하거나, 관련 데이터를 수집하여 [시스템 최적화]를 위한 변수 간 상관관계를 도출하는 보고서 작성`,
-                killingPoint: `기존의 보편적 해석을 넘어, 본인만의 '공학적/학문적 프레임워크'를 적용하여 결과를 도출하는 과정 포함`
+                question: `"${perfKey} 속 인물/현상이 겪는 본질적 한계를 ${career}의 ${perspective} 관점에서 기술적으로 지지하거나 재해석할 수 있는 방안은 무엇인가?"`,
+                execution: `단순한 기술 나열이 아니라, ${perfKey}의 시대적/공간적 맥락을 유지하면서도 ${perspective} 원리를 적용한 '개념 모델' 혹은 '가상 프로토타입' 제안`,
+                killingPoint: `교과적 역량(비판적 읽기/분석)을 우선 증명한 후, 이를 바탕으로 진로 역량을 '해결책'으로 제시하는 논리 전개`
             },
-            sample: `${perfKey}를 다루는 과정에서 발생한 학문적 호기심을 ${mainConcept}의 관점으로 확장하여 탐구함. 특히 ${subConcept} 원리를 적용하여 현상을 정량적으로 분석하려는 시도가 돋보였으며, 이를 통해 복잡한 시스템을 논리적으로 구조화하는 탁월한 역량을 보여줌.`
+            sample: `${perfKey}에 대한 깊이 있는 이해를 바탕으로 ${mainTerm}를 정교하게 분석함. 특히 작품 속 ${subTerm}를 인간 중심적 가치와 연결하여 성찰하는 태도가 돋보임. 더 나아가 이러한 인문학적 고민을 ${perspective}이라는 전공적 도구를 활용해 해결 방안으로 확장하며, 교과 지식과 진로 역량을 유기적으로 통합하는 탁월한 융합적 사고력을 보여줌.`
         };
     }
 
-    // Update the UI update logic slightly to handle the new guide format
     generateBtn.addEventListener('click', async () => {
         const performance = performanceInput.value.trim();
         const career = careerInput.value.trim();
@@ -82,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const guideHtml = `
             <ul>
-                <li><strong>키워드 브릿지:</strong> ${analysis.guide.bridge}</li>
+                <li><strong>인문학적/교과적 질문:</strong> ${analysis.guide.question}</li>
                 <li><strong>실행 아이디어:</strong> ${analysis.guide.execution}</li>
                 <li><strong>킬링 포인트:</strong> ${analysis.guide.killingPoint}</li>
             </ul>
