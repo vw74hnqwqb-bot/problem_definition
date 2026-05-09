@@ -17,48 +17,70 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateConsulting(performance, career) {
-        // Subject-Specific Terminology (The "Subject Essence")
-        const subjectEssence = {
-            '문학': { terms: ['서사적 구조', '문학적 형상화', '비판적 성찰', '상징적 의미'], goal: '인간 소외 및 공동체 가치 회복' },
-            '사회': { terms: ['사회 구조적 모순', '상호작용적 관점', '제도적 보완', '공익적 가치'], goal: '지속 가능한 사회 시스템 설계' },
-            '과학': { terms: ['인과 관계의 정량화', '메커니즘 분석', '법칙의 보편성', '실증적 탐구'], goal: '자연 현상의 논리적 해명 및 기술적 응용' }
+        // 1. [과목별 언어 필터링]
+        const subjectFilters = {
+            '인문사회': {
+                detect: ['문학', '사회', '역사', '윤리', '지리', '언어', '비평'],
+                terms: ['성찰', '비판적 시각', '가치', '맥락', '수용', '변화'],
+                goal: '인간 중심의 가치 성찰과 맥락적 이해'
+            },
+            '자연공학': {
+                detect: ['과학', '물리', '화학', '생명', '지구', '수학', '기술'],
+                terms: ['메커니즘', '효율', '모델링', '인과관계', '최적화'],
+                goal: '현상의 인과적 해명과 시스템적 효율화'
+            }
         };
 
-        // Career as a "Perspective" (The "Tool")
-        const careerPerspective = {
-            '기계': '동역학적 제어 및 시스템 최적화',
-            '화학': '물질 대사 및 분자적 상호작용',
-            '인공지능': '알고리즘적 판단 및 지능형 모델링',
-            '컴퓨터': '데이터 구조화 및 연산 효율성',
-            '생명': '생체 시스템의 항상성 및 기전',
-            '심리': '인지적 기제 및 행동 예측 모델'
+        // 2. [진로 키워드의 '동사'화]
+        const careerVerbification = {
+            '기계': '동역학적 에너지를 효율적으로 제어하고 구조적 안정성을 설계하는 시각',
+            '화학': '물질의 효율적 결합과 반응을 설계하여 가치를 창출하는 시각',
+            '컴퓨터': '복잡한 현상을 논리적 단계로 구조화하고 연산의 효율성을 극대화하는 사고',
+            '인공지능': '데이터 속의 패턴을 정교하게 모델링하여 지능형 최적화를 구현하는 사고',
+            '생명': '생체 시스템의 정교한 메커니즘을 분석하여 생명 현상을 제어하는 시각',
+            '전자': '전자기적 신호의 흐름을 설계하여 정보 전달과 제어의 효율을 높이는 시각',
+            '의학': '병태생리학적 인과관계를 추적하여 생명 유지의 최적화된 솔루션을 찾는 시각',
+            '심리': '인지적 기제와 행동의 상관관계를 모델링하여 인간 마음의 메커니즘을 읽는 시각',
+            '경제': '희소한 자원의 효율적 배분을 위한 시장 모델링과 최적의 의사결정 시각',
+            '경영': '조직의 시스템적 효율을 극대화하고 리스크를 정량적으로 관리하는 시각'
         };
 
-        // Detect Subject (Default to Literature/General)
-        let subject = '문학';
-        for (const key in subjectEssence) {
-            if (performance.includes(key)) { subject = key; break; }
+        // Detect Subject Category
+        let category = '인문사회';
+        for (const cat in subjectFilters) {
+            if (subjectFilters[cat].detect.some(d => performance.includes(d))) {
+                category = cat;
+                break;
+            }
         }
 
-        const essence = subjectEssence[subject];
-        let perspective = '융합적 시각을 통한 시스템 보완';
-        for (const key in careerPerspective) {
-            if (career.includes(key)) { perspective = careerPerspective[key]; break; }
+        const filter = subjectFilters[category];
+        const mainTerm = filter.terms[0];
+        const subTerm = filter.terms[1];
+
+        // Verbify Career
+        let verbifiedCareer = '학문적 원리를 실무적 해결책으로 치환하는 시각';
+        for (const key in careerVerbification) {
+            if (career.includes(key)) {
+                verbifiedCareer = careerVerbification[key];
+                break;
+            }
         }
 
-        const perfKey = performance.split(' ').filter(w => w.length > 1)[0] || '탐구 대상';
-        const mainTerm = essence.terms[0];
-        const subTerm = essence.terms[1];
+        const perfKey = performance.split(' ').filter(w => w.length > 1)[0] || '해당 소재';
+
+        // 3. [문제 정의의 '브릿지' 공식] 적용
+        const bridgeLogic = `${perfKey}에 내재된 [${mainTerm}과 ${subTerm}]이라는 문제를 해결하기 위해, ${career}의 [${verbifiedCareer}]을 관점으로 빌려와서 [학제간 융합적 성찰이 담긴 새로운 대안]을 제시합니다.`;
 
         return {
-            title: `"${perfKey}에 나타난 ${mainTerm} 분석과 ${perspective}을 통한 문제 해결적 고찰"`,
-            logic: `먼저 ${perfKey}의 ${mainTerm}와 ${subTerm}를 통해 해당 교과가 다루는 본질적인 가치인 '${essence.goal}'를 깊이 있게 분석했습니다. 이후, 이를 실질적으로 구현하거나 해결하기 위한 도구로서 ${career}의 '${perspective}' 관점을 도입하여 학문의 경계를 넘나드는 성찰을 시도했습니다.`,
+            title: `"${mainTerm}적 성찰로 본 ${perfKey}: ${career}의 ${subTerm} 모델을 통한 재해석"`,
+            logic: bridgeLogic,
             guide: {
-                question: `"${perfKey} 속 인물/현상이 겪는 본질적 한계를 ${career}의 ${perspective} 관점에서 기술적으로 지지하거나 재해석할 수 있는 방안은 무엇인가?"`,
-                execution: `단순한 기술 나열이 아니라, ${perfKey}의 시대적/공간적 맥락을 유지하면서도 ${perspective} 원리를 적용한 '개념 모델' 혹은 '가상 프로토타입' 제안`,
-                killingPoint: `교과적 역량(비판적 읽기/분석)을 우선 증명한 후, 이를 바탕으로 진로 역량을 '해결책'으로 제시하는 논리 전개`
+                question: `"${perfKey}이 지닌 '${mainTerm}'의 결핍을 ${career}의 '${subTerm}' 관점에서 보완할 수 있는 논리적 모델은 무엇인가?"`,
+                execution: `단순한 지식 결합을 넘어, ${perfKey}의 고유한 맥락 속에서 [${verbifiedCareer}]을 적용하여 정량적/논리적 해결 모델을 제안하는 보고서 작성`,
+                killingPoint: `교과 특유의 '${mainTerm}' 역량을 먼저 입증한 후, 이를 ${career}의 '${subTerm}'이라는 관점으로 해결해 나가는 '문제 해결형 지적 확장' 강조`
             },
-            sample: `${perfKey}에 대한 깊이 있는 이해를 바탕으로 ${mainTerm}를 정교하게 분석함. 특히 작품 속 ${subTerm}를 인간 중심적 가치와 연결하여 성찰하는 태도가 돋보임. 더 나아가 이러한 인문학적 고민을 ${perspective}이라는 전공적 도구를 활용해 해결 방안으로 확장하며, 교과 지식과 진로 역량을 유기적으로 통합하는 탁월한 융합적 사고력을 보여줌.`
+            sample: `${perfKey}에 나타난 ${mainTerm}을 분석하며 학제간 융합의 필요성을 인식함. 특히 해당 문제의 해법을 찾기 위해 ${career} 분야의 '${verbifiedCareer}'을 도입하여 사고를 확장한 점이 인상적임. 교과 고유의 '${subTerm}' 역량과 전공적 통찰을 유기적으로 연결하여, 현상을 다각도에서 모델링하고 최적의 대안을 도출하는 탁월한 융합적 역량을 증명함.`
         };
     }
 
@@ -85,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const guideHtml = `
             <ul>
-                <li><strong>인문학적/교과적 질문:</strong> ${analysis.guide.question}</li>
+                <li><strong>융합적 핵심 질문:</strong> ${analysis.guide.question}</li>
                 <li><strong>실행 아이디어:</strong> ${analysis.guide.execution}</li>
                 <li><strong>킬링 포인트:</strong> ${analysis.guide.killingPoint}</li>
             </ul>
