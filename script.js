@@ -38,27 +38,31 @@ document.addEventListener('DOMContentLoaded', () => {
         // Summary Area
         document.getElementById('result-summary').innerHTML = `
             <ul class="summary-list">
-                <li><strong>선택한 교과 주제:</strong> ${idea.summary.subjectTopic}</li>
-                <li><strong>추천 소재(작품/개념):</strong> ${idea.summary.material}</li>
-                <li><strong>연결할 진로 개념:</strong> ${idea.summary.careerConcept}</li>
-                <li><strong>과제물 최종 제목:</strong> <span class="highlight-text">${idea.summary.title}</span></li>
+                <li><strong>📍 현재 과제 상황:</strong> ${idea.summary.status}</li>
+                <li><strong>📌 추천 소재 및 개념:</strong> ${idea.summary.material}</li>
+                <li><strong>✅ 최종 결과물 형태:</strong> ${idea.summary.format}</li>
+                <li><strong>🚀 과제물 최종 제목:</strong> <span class="highlight-text">${idea.summary.title}</span></li>
             </ul>
         `;
 
         // Logic Area
         document.getElementById('result-logic-section').innerHTML = `
             <div class="logic-box">
-                <p><strong>📍 문제 정의:</strong> ${idea.logic.problem}</p>
-                <p><strong>📍 나만의 융합 관점:</strong> ${idea.logic.perspective}</p>
+                <p><strong>💡 문제 정의:</strong> ${idea.logic.problem}</p>
+                <p><strong>💡 전공 기반 분석 관점:</strong> ${idea.logic.perspective}</p>
             </div>
         `;
 
         // Action Plan Area
+        const planHtml = idea.plan.steps.map(step => `
+            <div class="step">
+                <strong>${step.header}:</strong> ${step.content}
+            </div>
+        `).join('');
+
         document.getElementById('result-action-plan').innerHTML = `
             <div class="action-plan-steps">
-                <div class="step"><strong>• 도입부 (1~2p):</strong> ${idea.plan.intro}</div>
-                <div class="step"><strong>• 전개부 (3~4p):</strong> ${idea.plan.body}</div>
-                <div class="step"><strong>• 결론 및 대안 (5p):</strong> ${idea.plan.outro}</div>
+                ${planHtml}
             </div>
         `;
 
@@ -67,47 +71,70 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function generateIdea(subject, performance, career) {
-        // Real-world "Almang-ee" Database
-        const books = [
-            { title: "『변신』 (프란츠 카프카)", topic: "소외, 의사소통 단절, 존재의 가치" },
-            { title: "『멋진 신세계』 (올더스 헉슬리)", topic: "계급 사회, 기술 만능주의, 인간성 상실" },
-            { title: "『침묵의 봄』 (레이첼 카슨)", topic: "환경 오염, 생태계 파괴, 기업의 윤리" },
-            { title: "『정의란 무엇인가』 (마이클 샌델)", topic: "공정, 다수의 이익, 개인의 권리" }
+        // 1. [현재 단계 및 포맷 파악]
+        let format = '보고서';
+        let unit = '단락';
+        if (performance.includes('카드뉴스')) { format = '카드뉴스'; unit = '슬라이드'; }
+        else if (performance.includes('발표') || performance.includes('PPT')) { format = '발표/PPT'; unit = '장'; }
+
+        // Detect quantity (e.g., "4개 조사")
+        const quantityMatch = performance.match(/(\d+)개/);
+        const count = quantityMatch ? parseInt(quantityMatch[1]) : 1;
+
+        // 2. [소재 매칭 - 자연스러운 융합]
+        const db = [
+            { title: "『변신』 (프란츠 카프카)", topic: "소통 단절과 개체의 고립", logic: "피드백 루프의 단절로 인한 시스템 붕괴" },
+            { title: "『멋진 신세계』 (올더스 헉슬리)", topic: "획일화된 사회와 개성 상실", logic: "과도한 정규화(Normalization)로 인한 데이터 다양성 결여" },
+            { title: "『침묵의 봄』 (레이첼 카슨)", topic: "생태계 평형 파괴", logic: "연쇄적 인과관계에 따른 평형점 이동" },
+            { title: "『자유론』 (존 스튜어트 밀)", topic: "개인의 자유와 사회적 간섭", logic: "다중 이해관계자 간의 최적화 알고리즘 탐색" }
         ];
 
-        const concepts = {
-            '기계': { name: "피드백 제어 시스템 (Feedback Control System)", desc: "시스템의 출력을 입력에 반영하여 오차를 줄이는 메커니즘" },
-            '화학': { name: "르샤틀리에의 원리 (Le Chatelier's Principle)", desc: "외부 변화를 상쇄하는 방향으로 평형이 이동하는 성질" },
-            '컴퓨터': { name: "데이터 정규화 (Data Normalization)", desc: "중복을 제거하고 데이터를 구조화하여 효율성을 높이는 과정" },
-            '경제': { name: "게임 이론 (Game Theory)", desc: "상대방의 선택을 고려하여 자신의 최적 전략을 결정하는 분석법" },
-            '생명': { name: "항상성 유지 기전 (Homeostasis)", desc: "외부 환경 변화에도 내부 상태를 일정하게 유지하려는 생명 현상" },
-            '디자인': { name: "게슈탈트 시지각 원리 (Gestalt Principles)", desc: "부분이 아닌 전체로서 사물을 인식하는 인간의 시각적 특성" }
+        const selectedWorks = [];
+        for(let i=0; i<count; i++) {
+            selectedWorks.push(db[i % db.length]);
+        }
+
+        const materials = selectedWorks.map(w => w.title).join(', ');
+        const mainWork = selectedWorks[0];
+
+        // Career Logic (Metaphorical)
+        const careerLogics = {
+            '기계': '변수 간의 동적 평형과 오차 수정 메커니즘',
+            '화학': '에너지 평형 상태에서의 물질적 상호작용',
+            '컴퓨터': '복잡한 구조의 계층적 추상화와 논리적 단계화',
+            '데이터': '다량의 변수에서 유의미한 패턴을 추출하는 방식',
+            '생명': '항상성 유지를 위한 자기 조절 피드백 시스템'
         };
 
-        // Pick one book and concept
-        const book = books[Math.floor(Math.random() * books.length)];
-        let concept = { name: "임계점 이론 (Critical Point Theory)", desc: "어떤 현상이 갑자기 변화하기 시작하는 특정 지점" };
-        
-        for (const key in concepts) {
-            if (career.includes(key)) { concept = concepts[key]; break; }
+        let activeLogic = '현상의 인과관계를 논리적으로 구조화하는 시각';
+        for (const key in careerLogics) {
+            if (career.includes(key)) { activeLogic = careerLogics[key]; break; }
+        }
+
+        // 3. [출력 생성]
+        const steps = [];
+        if (format === '카드뉴스') {
+            steps.push({ header: 'Slide 1-2 (도입)', content: `${mainWork.title}의 핵심 장면을 통해 탐구 동기를 시각화합니다.` });
+            steps.push({ header: 'Slide 3-5 (분석)', content: `${activeLogic}의 관점에서 사건의 인과관계를 분석한 카드 구성을 제안합니다.` });
+            steps.push({ header: 'Slide 6 (결론)', content: `현대적 대안을 제시하며 마무리합니다.` });
+        } else {
+            steps.push({ header: '1단계 (서론/도입)', content: `${materials}을 선정한 이유와 당장 해결해야 할 과제 목표를 정의합니다.` });
+            steps.push({ header: '2단계 (본론/전개)', content: `${activeLogic}을 활용하여 각 소재의 핵심 모순을 분석하고 논리적 연결 고리를 만듭니다.` });
+            steps.push({ header: '3단계 (결론/마무리)', content: `탐구 결과를 종합하여 실천적 대안을 제시합니다.` });
         }
 
         return {
             summary: {
-                subjectTopic: book.topic,
-                material: book.title,
-                careerConcept: concept.name,
-                title: `[${subject}] ${book.title.split(' ')[0]}을 통해 본 ${concept.name.split(' ')[0]}적 시스템 설계`
+                status: `${count}개의 소재를 활용한 ${format} 제작 단계`,
+                material: materials,
+                format: format,
+                title: `${mainWork.title.split(' ')[0]} 속의 ${mainWork.topic.split(' ')[0]} 현상: ${activeLogic.split(' ')[0]}적 접근`
             },
             logic: {
-                problem: `${book.title}에서 나타나는 '${book.topic.split(',')[0]}'의 문제는 개별 주체 간의 신호 전달이 왜곡되어 전체 시스템의 조화가 깨졌기 때문에 발생합니다.`,
-                perspective: `${concept.name}의 관점에서 보면, 소설 속 인물들의 갈등은 단순한 심리전이 아니라 ${concept.desc}의 원리가 제대로 작동하지 않아 발생한 시스템 오류로 해석할 수 있습니다.`
+                problem: `${mainWork.title}에서 발생하는 갈등은 구성원 간의 정보 전달이 왜곡되어 전체 시스템의 안정성이 깨진 상태를 의미합니다.`,
+                perspective: `이러한 현상을 '${activeLogic}' 관점에서 분석하면, 단순한 감정적 갈등이 아니라 시스템의 입력과 출력 사이에서 발생하는 논리적 오류로 재정의할 수 있습니다.`
             },
-            plan: {
-                intro: `${book.title}의 줄거리 요약과 함께, 탐구하고자 하는 핵심 질문(예: 왜 가족들은 변신한 주인공을 거부했는가?)을 제시합니다.`,
-                body: `${concept.name}의 정의를 설명하고, 소설 속 사건들을 이 이론에 대입하여 분석합니다. (예: 가족의 태도 변화를 ${concept.name.split(' ')[0]} 그래프로 시각화)`,
-                outro: `분석 결과를 종합하여, 현대 사회에서 '${book.topic.split(',')[0]}' 문제를 해결하기 위해 필요한 ${career}적 마인드셋이나 기술적 보완점을 제안하며 마무리합니다.`
-            }
+            plan: { steps }
         };
     }
 });
