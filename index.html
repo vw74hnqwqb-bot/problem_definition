@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전략적 교육 컨설턴트 | 생기부 융합 탐구 제안기</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="logo">Strategic<span>Consultant</span></div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <h1>당신의 평범한 활동을<br><span class="highlight">입시의 무기</span>로 만듭니다</h1>
+            <p>수행평가와 진로를 연결하여 매력적인 융합 탐구 주제를 제안받으세요.</p>
+        </section>
+
+        <section class="input-section">
+            <div class="card glass">
+                <div class="input-group">
+                    <label for="performance-content">
+                        <span class="icon">📚</span> 교과 수행평가 내용
+                    </label>
+                    <textarea id="performance-content" placeholder="예: 문학 - 1930년대 소설을 읽고 현대 사회 문제와 연관 지어 비평문 쓰기"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="career-interest">
+                        <span class="icon">🎯</span> 희망 진로 / 관심 분야
+                    </label>
+                    <input type="text" id="career-interest" placeholder="예: 기계공학과, 인공지능 연구원">
+                </div>
+
+                <button id="generate-btn" class="primary-btn">
+                    <span>전략적 가이드라인 생성하기</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+        </section>
+
+        <section id="result-section" class="result-section hidden">
+            <div class="loader">
+                <div class="spinner"></div>
+                <p>전략 분석 중...</p>
+            </div>
+
+            <div id="report-card" class="card glass result-card hidden">
+                <div class="report-header">
+                    <h2>✨ 맞춤형 전략 보고서</h2>
+                    <button id="copy-btn" class="secondary-btn">결과 복사하기</button>
+                </div>
+                
+                <div class="report-content">
+                    <div class="report-item">
+                        <h3>[융합 탐구 주제]</h3>
+                        <p id="result-title" class="title-text"></p>
+                    </div>
+
+                    <div class="report-item">
+                        <h3>[학문적 연결 고리]</h3>
+                        <p id="result-logic"></p>
+                    </div>
+
+                    <div class="report-item">
+                        <h3>[심화 탐구 가이드]</h3>
+                        <div id="result-guide"></div>
+                    </div>
+
+                    <div class="report-item">
+                        <h3>[생기부 기재용 핵심 역량 문구]</h3>
+                        <div class="quote-box">
+                            <p id="result-sample"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Strategic Education Consultant. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
